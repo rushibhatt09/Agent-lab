@@ -1,55 +1,79 @@
 # Agent Lab - Multi-Agent Workflows Playground
 
-An interactive, premium web-based dashboard demonstrating production-grade AI Agent architectures, state-based coordination, tool calling, and self-healing loops. 
+An interactive, visual web dashboard demonstrating how teams of specialized **AI Workers (Agents)** collaborate, use tools, check their work, and fix their own mistakes to solve complex tasks.
 
-This project was built to address the **"engineering chasm"** in AI systems—moving beyond fragile prompt-and-response setups to resilient, observability-focused agent systems that recruiters look for.
-
----
-
-## 🚀 Key Architectural Patterns Showcased
-
-1. **State-Based Multi-Agent Routing (Cyclic Graphs)**
-   Unlike simple sequential LLM calls, our **Research Scenario** routes control dynamically based on validation. The *Peer Critic* evaluates research data and routes the execution back to the *Web Searcher* if information gaps are found.
-2. **The Self-Healing Loop (Reflection)**
-   In the **Self-Healing Coder Scenario**, a *Coder Agent* produces code that is run inside a virtual test sandbox. If the tests fail (due to an infinite loop, syntactic error, or semantic bug), the traceback is captured, passed back as context, and a *Debugger Agent* instructs the coder on how to correct the code.
-3. **Semantic Guardrails & Alignment Policy**
-   In the **Support & Guardrails Scenario**, the *Policy Guard* serves as a strict constraint layer checking final deliverables for safety, SLA timelines, or financial bounds (e.g., rejecting an support draft that exceeds gift card limits), rewriting it dynamically before the *Delivery Agent* sends the email.
-4. **Model Context Protocol (MCP) Tools integration**
-   Includes a production-ready reference server [mcp-server-demo.js](file:///C:/Users/micro/.gemini/antigravity/scratch/agent-lab/mcp-server-demo.js) demonstrating how to expose tools like sandboxed terminal execution and database queries to LLM clients (like Claude Desktop) using Anthropic's open-source protocol.
+👉 **Live Demo**: Configure and run the project live in your browser!
 
 ---
 
-## 🛠️ Tech Stack & Design System
+## 💡 What is Agent Lab? (In Plain English)
 
-- **Core**: Vanilla HTML5, ES6 Modules (modular, buildless development).
-- **Styling**: Vanilla CSS3 Custom Properties. Features a premium glassmorphic dark-mode theme, glowing canvas graph nodes, and pulsating interactive communication paths.
-- **Graph Drawing**: Dynamic coordinates calculation rendering SVG linkage overlays that dynamically resize with the browser viewport.
-- **Observability Console**: Terminal emulator displaying standardized, color-coded logging traces showing real-time token telemetry, model pricing estimations, and agent reasoning.
+Traditional AI (like standard ChatGPT) is like a calculator: you ask a question once, and it gives you a single answer. If it makes a mistake, you have to find it and correct it yourself.
+
+An **AI Agent** is different. It acts like a **virtual employee**. You give it a high-level goal, and it plans its own steps, uses digital tools (like searching the web or checking database records), and reviews its own results.
+
+**Agent Lab** is a **visual floor plan** showing how a team of these virtual employees collaborate in a digital office to get a job done safely and accurately.
 
 ---
 
-## 💻 Quickstart (Running Locally)
+## 🏢 The Three Office Teams You Can Watch
 
-Since the project uses ES Modules, opening `index.html` directly in the browser may trigger CORS flags. It is best served using a lightweight HTTP server.
+Select a scenario in the dashboard sidebar to watch these virtual teams in action:
 
-**Option 1: Using Node/NPX (Recommended)**
+### 1. The Research & Writing Team (Research & Synthesis)
+*   **The Boss (Orchestrator)**: Gets the goal (*"Write a report on 2026 fusion energy breakthroughs"*), breaks it down, and coordinates the team.
+*   **The Researcher (Searcher)**: Uses search tools to find recent news articles and scientific papers.
+*   **The Editor (Peer Critic)**: Reviews the researcher's findings. If a key fact is missing, they send the Researcher back to query Google again.
+*   **The Writer**: Synthesizes the checked facts into a polished markdown document.
+*   *Key takeaway*: This shows how AI can double-check its own research gaps before writing.
+
+### 2. The Self-Healing Programmer (Self-Healing Coder)
+*   **The Programmer (Coder)**: Drafts a piece of Javascript code to solve a math problem.
+*   **The Tester (Sandbox)**: Tries to run the code, but it hits a bug and crashes.
+*   **The Debugger**: Captures the computer crash error, reflects on *why* the code failed, and explains the fix to the Programmer.
+*   **The Programmer**: Rewrites the code. The Tester runs it again, and it passes successfully.
+*   *Key takeaway*: This demonstrates a "self-healing loop" where AI reads its own crash errors to fix its bugs.
+
+### 3. Customer Service & Compliance (Support & Guardrails)
+*   **The Router**: Analyzes an incoming customer complaint about a subscription refund.
+*   **The Database Clerk**: Queries user transaction logs to confirm their eligibility.
+*   **The Writer**: Drafts an apology email but accidentally offers a $20 gift card.
+*   **The Compliance Officer (Policy Guard)**: Intercepts the email and says: *"Stop. Company policy limits refund compensation to $10. Rewrite the response."*
+*   **The Writer**: Corrects the email, and it is successfully sent to the customer.
+*   *Key takeaway*: This shows how safety guardrails prevent AI from making costly business errors.
+
+---
+
+## 🖥️ How the Dashboard Works
+
+*   **Active Node Glow**: Watch the active virtual worker glow in real-time as the task passes from person to person.
+*   **Thought Trace Console**: Read the terminal log to see the "thoughts" of the AI workers (e.g., *"Thought: The program crashed. I will check the loop indexing..."*).
+*   **Performance Metrics**: Track the simulated cost, speed, and tool usage of the running workflow.
+*   **Deliverable Output**: See the finished markdown report, bug-free code, or customer email compiled in real-time.
+
+---
+
+## 🛠️ Technical Details (For Developers & Tech Recruiters)
+
+If you are evaluating this project from a software engineering perspective, it showcases:
+1. **State-Based Orchestration**: Built using cyclic graph structures (simulating state managers like LangGraph) to allow tasks to loop back to prior agents on validation failures.
+2. **Observability & Telemetry**: Captures prompt/completion token weights, active tool success rates, and standardized logging tags (`[PLAN]`, `[THOUGHT]`, `[TOOL CALL]`, `[REFLECTION]`).
+3. **Model Context Protocol (MCP)**: Exposes a reference server implementation ([mcp-server-demo.js](file:///C:/Users/micro/.gemini/antigravity/scratch/agent-lab/mcp-server-demo.js)) demonstrating how to expose tools like sandboxed terminals and SQL databases to AI clients.
+4. **Zero-Build Architecture**: Implemented using semantic HTML5, Vanilla CSS3 (glassmorphic layout, SVG path updates, custom keyframes), and modular ES6 Javascript.
+
+---
+
+## 🚀 Quickstart (Running Locally)
+
+Since the project uses ES Modules, serve the folder using a lightweight HTTP server:
+
+**Option 1: Using Python**
 ```bash
-# From the project root, run http-server instantly
+python -m http.server 8000
+```
+**Option 2: Using Node/NPX**
+```bash
 npx http-server ./
 ```
 
-**Option 2: Using Python**
-```bash
-# Python 3
-python -m http.server 8000
-```
-
-Once running, navigate to `http://localhost:8080` (or `http://localhost:8000`) in your browser to interact with the dashboard.
-
----
-
-## 🎯 Career Alignment (For Your Portfolio)
-When discussing this project with hiring managers or engineering leads, emphasize these engineering decisions:
-*   **Decoupled Tools**: We separated the tool definitions from the LLM core using the **Model Context Protocol (MCP)**, ensuring standard API compliance.
-*   **Cost Control**: The metrics row monitors token volumes and estimates cost, showing you design agents with business cost constraints in mind.
-*   **Observability First**: Rather than letting agents operate in a "black box", the *Thought Trace Console* prints standard logs showing planner decisions, tools queried, and evaluation tracebacks.
+Open `http://localhost:8000` (or `http://localhost:8080`) in your browser to run the playground!
