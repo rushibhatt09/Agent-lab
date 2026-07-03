@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Lab - Multi-Agent Workflows Dashboard</title>
+  <!-- Google Fonts: Inter for UI, Fira Code for logs -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header Bar -->
+  <header class="app-header">
+    <div class="header-logo">
+      <div class="logo-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <h1>Agent<span>Lab</span></h1>
+      <span class="badge badge-beta">v1.0</span>
+    </div>
+    
+    <div class="header-controls">
+      <div class="simulation-status">
+        <span class="status-dot status-idle"></span>
+        <span class="status-text">System Idle</span>
+      </div>
+      
+      <div class="divider"></div>
+      
+      <div class="btn-group">
+        <button id="btn-play" class="btn btn-primary" title="Start Simulation">
+          <svg class="icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <svg class="icon-pause hidden" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+          <span>Run</span>
+        </button>
+        <button id="btn-step" class="btn btn-secondary" title="Execute Next Step">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+          <span>Step</span>
+        </button>
+        <button id="btn-reset" class="btn btn-secondary" title="Reset Workspace">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span>Reset</span>
+        </button>
+      </div>
+      
+      <div class="divider"></div>
+      
+      <div class="speed-selector">
+        <label for="select-speed">Speed:</label>
+        <select id="select-speed" class="select-input">
+          <option value="1500">Normal (1x)</option>
+          <option value="800">Fast (2x)</option>
+          <option value="150">Turbo (10x)</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid Layout -->
+  <div class="app-layout">
+    
+    <!-- Left Sidebar: Controls & Configuration -->
+    <aside class="app-sidebar">
+      <!-- Section: Scenarios -->
+      <div class="sidebar-section">
+        <h3>Agent Scenarios</h3>
+        <p class="section-desc">Select an agentic workflow to load into the simulator.</p>
+        <div class="scenario-cards">
+          <div class="scenario-card active" data-scenario="research">
+            <div class="card-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            </div>
+            <div class="card-details">
+              <h4>Research & Synthesis</h4>
+              <p>Multi-agent team researching topics and peer-reviewing final report drafts.</p>
+            </div>
+          </div>
+
+          <div class="scenario-card" data-scenario="coding">
+            <div class="card-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            </div>
+            <div class="card-details">
+              <h4>Self-Healing Coder</h4>
+              <p>Agent writes code, runs unit tests in sandbox, detects errors, and self-corrects.</p>
+            </div>
+          </div>
+
+          <div class="scenario-card" data-scenario="routing">
+            <div class="card-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg>
+            </div>
+            <div class="card-details">
+              <h4>Support & Guardrails</h4>
+              <p>Router directs user tickets, database extracts profile, and policy guardrails check draft.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Environment Settings -->
+      <div class="sidebar-section">
+        <h3>Execution Mode</h3>
+        <div class="toggle-group">
+          <button id="mode-simulated" class="btn-toggle active">Simulated Run</button>
+          <button id="mode-live" class="btn-toggle">Live API Run</button>
+        </div>
+        
+        <div class="live-settings hidden" id="live-config-panel">
+          <div class="form-group">
+            <label for="select-model">Model Endpoint</label>
+            <select id="select-model" class="select-input full-width">
+              <option value="gemini-2.5-flash">Gemini 2.5 Flash (Default)</option>
+              <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+              <option value="custom-local">Local LLM (Ollama / vLLM)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="input-api-key">Gemini API Key</label>
+            <input type="password" id="input-api-key" class="text-input full-width" placeholder="Enter key for live calls...">
+            <span class="input-note">Keys are stored locally in your browser.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Custom Directives -->
+      <div class="sidebar-section">
+        <h3>Workflow Prompt</h3>
+        <div class="form-group">
+          <textarea id="custom-prompt" class="textarea-input full-width" rows="3" placeholder="Explain what task the agents should solve..."></textarea>
+        </div>
+        <button id="btn-apply-prompt" class="btn btn-secondary full-width">Apply Custom Goal</button>
+      </div>
+      
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <p>Built as a portfolio showcase to demonstrate Multi-Agent Architectures, ReAct Loops, and Tool Integration.</p>
+      </div>
+    </aside>
+
+    <!-- Main Workspace (Center & Bottom) -->
+    <main class="app-main">
+      <!-- Top Row: Metrics Panel -->
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Active Node</span>
+            <div class="metric-icon stroke-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+            </div>
+          </div>
+          <div class="metric-value" id="metric-active-node">Orchestrator</div>
+          <div class="metric-sub" id="metric-sub-node">Awaiting start</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Prompt / Completion Tokens</span>
+            <div class="metric-icon stroke-cyan">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line></svg>
+            </div>
+          </div>
+          <div class="metric-value" id="metric-tokens">0</div>
+          <div class="metric-sub" id="metric-sub-tokens">0 prompt / 0 output</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Accumulated Cost</span>
+            <div class="metric-icon stroke-green">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+            </div>
+          </div>
+          <div class="metric-value" id="metric-cost">$0.0000</div>
+          <div class="metric-sub" id="metric-sub-cost">Simulated model cost</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Tool Calls / Success</span>
+            <div class="metric-icon stroke-purple">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            </div>
+          </div>
+          <div class="metric-value" id="metric-tools">0</div>
+          <div class="metric-sub" id="metric-sub-tools">100% success rate</div>
+        </div>
+      </section>
+
+      <!-- Center Row: Visual Agent Orchestrator Network -->
+      <section class="visualizer-container glass-panel">
+        <div class="panel-header">
+          <h3>Agent Communication Graph</h3>
+          <span class="panel-subtitle">Visual representation of data routing and orchestration</span>
+        </div>
+        
+        <div class="graph-workspace" id="graph-workspace">
+          <!-- Connection lines drawing SVG -->
+          <svg class="graph-svg-overlay" id="graph-svg-overlay"></svg>
+          
+          <!-- Nodes will be injected here dynamically, but we have a basic placeholder layout -->
+          <div class="nodes-container" id="nodes-container">
+            <!-- Dynamically loaded nodes based on scenarios -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Split Layout: Console Logs vs Results -->
+      <div class="bottom-split-grid">
+        <!-- Thought Trace Terminal Console -->
+        <section class="console-container glass-panel">
+          <div class="console-header">
+            <div class="window-controls">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <span class="console-title">agent_thought_trace.log</span>
+            <button id="btn-clear-console" class="btn-icon" title="Clear Logs">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
+          
+          <div class="console-body" id="console-logs">
+            <div class="log-line log-system">SYSTEM: Ready to launch agentic workflow. Select a scenario and press "Run".</div>
+          </div>
+        </section>
+
+        <!-- Final Delivery/Code Editor Result -->
+        <section class="result-container glass-panel">
+          <div class="result-header">
+            <div class="result-tabs">
+              <button class="tab-btn active" data-tab="output">Deliverable Output</button>
+              <button class="tab-btn" data-tab="mcp">MCP Server Spec</button>
+              <button class="tab-btn" data-tab="explanation">System Architecture</button>
+            </div>
+          </div>
+          
+          <div class="result-body">
+            <!-- Output Tab Content -->
+            <div class="tab-content active" id="tab-output">
+              <div class="output-placeholder">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <p>No output generated yet. Start the agent workflow simulation to watch the final results compile here in real-time.</p>
+              </div>
+            </div>
+
+            <!-- MCP Reference Spec Code Tab -->
+            <div class="tab-content hidden" id="tab-mcp">
+              <div class="code-editor-wrapper">
+                <div class="editor-header">
+                  <span class="editor-filename">mcp-server-demo.js</span>
+                  <button id="btn-copy-code" class="btn-text">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    Copy Reference Code
+                  </button>
+                </div>
+                <div class="editor-body">
+                  <pre><code class="language-js" id="mcp-code-container">Loading MCP server demo code...</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Architecture Tab Content -->
+            <div class="tab-content hidden" id="tab-explanation">
+              <div class="architecture-explanation">
+                <h4>Behind the Scenes: Agentic Loops</h4>
+                <p>This panel explains the underlying software patterns being simulated in the dashboard. When you talk to recruiters, emphasize these architectural design decisions:</p>
+                
+                <div class="pattern-grid">
+                  <div class="pattern-item">
+                    <h5>1. State-Based Orchestration</h5>
+                    <p>Instead of single linear chains, we use complex cyclic graphs (like LangGraph). This allows the system to route data back to prior steps if validation checks fail.</p>
+                  </div>
+                  <div class="pattern-item">
+                    <h5>2. Self-Correction & Reflection</h5>
+                    <p>In the coding scenario, the agent compiles and tests its code inside a sandbox. On failure, the stderr is caught, packaged as context, and sent back to the LLM to reflect, fix, and re-run. This is the <strong>Self-Healing Loop</strong>.</p>
+                  </div>
+                  <div class="pattern-item">
+                    <h5>3. Constraints via Guardrails</h5>
+                    <p>In the customer service scenario, the Policy Critic serves as a semantic guardrail. It checks the final output before delivery to ensure it conforms to safety, alignment, and formatting rules, rewriting it if violated.</p>
+                  </div>
+                  <div class="pattern-item">
+                    <h5>4. Tool Calling via MCP</h5>
+                    <p>The Model Context Protocol (MCP) decouples LLMs from custom tool servers. Instead of writing custom bindings for every database, the agent speaks to an MCP server which securely manages local file read/writes, databases, and APIs.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  
+  <!-- Notification / Alert -->
+  <div class="notification" id="app-notification">Copied to clipboard!</div>
+
+  <!-- Scripts -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
